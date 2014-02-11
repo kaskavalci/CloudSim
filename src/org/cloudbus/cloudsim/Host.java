@@ -618,5 +618,122 @@ public class Host {
 	public void setDatacenter(Datacenter datacenter) {
 		this.datacenter = datacenter;
 	}
+	
+	//FUSD alg needs to calculate skewness of each server
+	//this alg will be applied every active server(host) in system
+	// r = current utilization resource of a server
+	// rAverage = average utilization of all resources of a server
+	// n = number of resources
+	// p = is the server p
+	public double skewnessOfServer(){
+		
+		// current resource utilization, only bottleneck resources are considered
+		double currentRAMutilization = (getRamProvisioner().getUsedRam())/(getRamProvisioner().getRam());
+		double currentBWutilization = (getBwProvisioner().getUsedBw())/(getBwProvisioner().getBw());
+		double currentMIPSutilization = 1- ( getAvailableMips()/getTotalMips());
+		
+		// average resourse utilization is needed for the skewness formula
+		double averageUtilization = (currentRAMutilization + currentBWutilization + currentMIPSutilization)/3;
+		
+		// applying skewness formula
+		double ram = Math.pow(((currentRAMutilization/averageUtilization)-1), 2);
+		double bw = Math.pow(((currentBWutilization/averageUtilization)-1), 2);
+		double cpu = Math.pow(((currentMIPSutilization/averageUtilization)-1), 2);
+		double skewness = Math.sqrt(ram + bw + cpu);
+		
+		return skewness;
+	}
+	
+	//FUSD alg needs to calculate temperature of each server
+	//this alg will be applied every active server(host) in system
+	// rThreshold = hot theshold
+	// R = set of overloaded resources
+	// r = current utilization resource r
+	// p = is the server p	
+	public double hotTemperatureOfServer(){
+		
+		// current resource utilization, only bottleneck resources are considered
+		double currentRAMutilization = (getRamProvisioner().getUsedRam())/(getRamProvisioner().getRam());
+		double currentBWutilization = (getBwProvisioner().getUsedBw())/(getBwProvisioner().getBw());
+		double currentMIPSutilization = 1- ( getAvailableMips()/getTotalMips());
+		
+		// definitions for threshold values for resources (as stated in corresponding paper)
+		double hotThreshold = 0.90;
+		//double coldThreshold = 0.25;
+		//double warmThreshold = 0.65;
+		//double greenComputingThreshold = 0.40;
+		//double consolidationLimit = 0.05;
+		
+		double temperatureHot=0;
+		
+		//applying temperature formula for hotThreshold
+		if (currentRAMutilization >= hotThreshold){
+			temperatureHot = temperatureHot + Math.pow((currentRAMutilization-hotThreshold), 2);
+		}
+		if (currentBWutilization >= hotThreshold){
+			temperatureHot = temperatureHot + Math.pow((currentBWutilization-hotThreshold), 2);
+		}
+		if (currentMIPSutilization >= hotThreshold){
+			temperatureHot = temperatureHot + Math.pow((currentMIPSutilization-hotThreshold), 2);
+		}
+		
+		return temperatureHot;
+	}
+	
+	public double coldTemperatureOfServer(){
+		
+		// current resource utilization, only bottleneck resources are considered
+		double currentRAMutilization = (getRamProvisioner().getUsedRam())/(getRamProvisioner().getRam());
+		double currentBWutilization = (getBwProvisioner().getUsedBw())/(getBwProvisioner().getBw());
+		double currentMIPSutilization = 1- ( getAvailableMips()/getTotalMips());
+		
+		// definitions for threshold values for resources (as stated in corresponding paper)
+		//double hotThreshold = 0.90;
+		double coldThreshold = 0.25;
+		//double warmThreshold = 0.65;
+		//double greenComputingThreshold = 0.40;
+		//double consolidationLimit = 0.05;
+		
+		double temperatureCold=0;
+		
+		//applying temperature formula for hotThreshold
+		if (currentRAMutilization <= coldThreshold){
+			temperatureCold = temperatureCold + Math.pow((currentRAMutilization-coldThreshold), 2);
+			if (currentBWutilization <= coldThreshold){
+				temperatureCold = temperatureCold + Math.pow((currentBWutilization-coldThreshold), 2);
+				if (currentMIPSutilization <= coldThreshold){
+					temperatureCold = temperatureCold + Math.pow((currentMIPSutilization-coldThreshold), 2);
+				}
+			}
+		}
+				
+		return temperatureCold;
+	}
+	
+	public double greenComputingTemperatureOfServer(){
+		
+		// current resource utilization, only bottleneck resources are considered
+		double currentRAMutilization = (getRamProvisioner().getUsedRam())/(getRamProvisioner().getRam());
+		double currentBWutilization = (getBwProvisioner().getUsedBw())/(getBwProvisioner().getBw());
+		double currentMIPSutilization = 1- ( getAvailableMips()/getTotalMips());
+		
+		double averageUtilization = (currentRAMutilization + currentBWutilization + currentMIPSutilization)/3;
+		
+		// definitions for threshold values for resources (as stated in corresponding paper)
+		//double hotThreshold = 0.90;
+		//double coldThreshold = 0.25;
+		//double warmThreshold = 0.65;
+		double greenComputingThreshold = 0.40;
+		//double consolidationLimit = 0.05;
+		
+		double temperatureGreen=0;
+		
+		//applying temperature formula for hotThreshold
+		if (averageUtilization <= greenComputingThreshold){
+			temperatureGreen = Math.pow((averageUtilization-greenComputingThreshold), 2);
+		}
+		
+		return temperatureGreen;
+	}
 
 }
