@@ -8,27 +8,32 @@ import java.util.Random;
 import org.opt4j.core.genotype.PermutationGenotype;
 import org.opt4j.core.problem.Creator;
 
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+
 public class GACreator implements Creator<PermutationGenotype<PowerHost>> {
-	private List<PowerHost> elements;
+	Provider<List<PowerHost>> hosts;
 	private Random rnd;
 	
-	public GACreator(List<PowerHost> elements, Random rnd) {
-		this.elements = elements;
-		this.rnd = rnd;
+	@Inject
+	public GACreator( Provider<List<PowerHost>> hosts) {
+		this.hosts = hosts;
+		this.rnd = new Random();
 	}
 	
 	@Override
 	public PermutationGenotype<PowerHost> create() {
+		PermutationGenotype<PowerHost> individual = new PermutationGenotype<>();
+		List<PowerHost> elements = hosts.get();
 		List<PowerVm> VmList = new LinkedList<PowerVm>();
 		//save all vms
-		for (PowerHost ph : this.elements) {
+		for (PowerHost ph : elements) {
 			for (PowerVm pv : ph.<PowerVm> getVmList()) {
 				VmList.add(pv);
 			}
 		}
 		//shuffle the vms
 		Collections.shuffle(VmList, rnd);
-		PermutationGenotype<PowerHost> individual = new PermutationGenotype<>();
 		//create empty hostlist
 		for (PowerHost powerHost : elements) {
 			powerHost.vmDestroyAll();
@@ -37,7 +42,7 @@ public class GACreator implements Creator<PermutationGenotype<PowerHost>> {
 		//randomly allocate VMs
 		for (PowerHost powerHost : individual) {
 			int max = rnd.nextInt(powerHost.getPeList().size());
-			for (int i = 0; i < max; i++) {
+			for (int i = 0; i < max && VmList.size() > 0; i++) {
 				int pickRandom = rnd.nextInt(VmList.size());
 				if (powerHost.vmCreate(VmList.get(pickRandom))) {
 					VmList.remove(pickRandom);

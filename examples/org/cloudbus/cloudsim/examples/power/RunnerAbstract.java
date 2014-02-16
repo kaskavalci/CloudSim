@@ -16,6 +16,7 @@ import org.cloudbus.cloudsim.power.PowerDatacenter;
 import org.cloudbus.cloudsim.power.PowerHost;
 import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationAbstract;
 import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationFUSD;
+import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationGA;
 import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationInterQuartileRange;
 import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationLocalRegression;
 import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationLocalRegressionRobust;
@@ -287,6 +288,10 @@ public abstract class RunnerAbstract {
 					parameter);
 		} else if (vmAllocationPolicyName.equals("fusd")) {
 			vmAllocationPolicy = new PowerVmAllocationPolicyMigrationFUSD(
+					hostList,
+					vmSelectionPolicy);
+		} else if (vmAllocationPolicyName.equals("ga")) {
+			vmAllocationPolicy = new PowerVmAllocationPolicyMigrationGA(
 					hostList,
 					vmSelectionPolicy);
 		} else if (vmAllocationPolicyName.equals("dvfs")) {

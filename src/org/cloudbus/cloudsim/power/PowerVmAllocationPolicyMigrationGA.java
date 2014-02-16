@@ -1,16 +1,19 @@
 package org.cloudbus.cloudsim.power;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
-import org.apache.commons.math3.genetics.TournamentSelection;
-import org.apache.commons.math3.random.MersenneTwister;
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.util.ExecutionTimeMeasurer;
+import org.opt4j.benchmarks.dtlz.DTLZModule;
+import org.opt4j.core.Individual;
+import org.opt4j.core.optimizer.Archive;
+import org.opt4j.core.start.Opt4JTask;
+import org.opt4j.optimizers.ea.EvolutionaryAlgorithmModule;
+import org.opt4j.viewer.ViewerModule;
 
 public class PowerVmAllocationPolicyMigrationGA extends
 		PowerVmAllocationPolicyMigrationAbstract {
@@ -21,6 +24,7 @@ public class PowerVmAllocationPolicyMigrationGA extends
 		// TODO Auto-generated constructor stub
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Map<String, Object>> optimizeAllocation(
 			List<? extends Vm> vmList) {
@@ -59,8 +63,40 @@ public class PowerVmAllocationPolicyMigrationGA extends
 				new TargetFitness(0, false));
 */
 		
-		GAModule x = new GAModule();
-		x.config();
+		EvolutionaryAlgorithmModule ea = new EvolutionaryAlgorithmModule();
+		ea.setGenerations(500);
+		ea.setAlpha(100);
+		GAModule GAmod = new GAModule();
+		GAmod.setElements(this.<PowerHost>getHostList());
+		ViewerModule viewer = new ViewerModule();
+		viewer.setCloseOnStop(true);
+		Opt4JTask task = new Opt4JTask(false);
+		task.init(ea,GAmod);
+		List<PowerHost> solution = null;
+		try {
+		        task.execute();
+		        Archive archive = task.getInstance(Archive.class);
+		        for (Individual individual : archive) {
+		        	solution = (List<PowerHost> ) individual.getPhenotype();
+		                
+		        }
+		} catch (Exception e) {
+		        e.printStackTrace();
+		} finally {
+		        task.close();
+		} 
+		
+		for (PowerHost powerHost : solution) {
+			List<PowerVm> VMs = powerHost.getVmList();
+			for (PowerVm vm : VMs) {
+				Map<String, Object> migrate = new HashMap<String, Object>();
+				migrate.put("vm", vm);
+				migrate.put("host", powerHost);
+				migrationMap.add(migrate);
+			}
+		}
+
+		
 		getExecutionTimeHistoryTotal().add(
 				ExecutionTimeMeasurer.end("optimizeAllocationTotal"));
 		return migrationMap;

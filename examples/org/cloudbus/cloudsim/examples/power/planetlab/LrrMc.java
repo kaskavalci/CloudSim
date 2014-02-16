@@ -35,8 +35,8 @@ public class LrrMc {
 		String inputFolder = LrrMc.class.getClassLoader().getResource("workload/planetlab").getPath();
 		String outputFolder = "output";
 		String workload = "20110303"; // PlanetLab workload
-		String vmAllocationPolicy = "fusd"; // Local Regression Robust (LRR) VM allocation policy
-		String vmSelectionPolicy = "fusd"; // Maximum Correlation (MC) VM selection policy
+		String vmAllocationPolicy = "ga"; // Local Regression Robust (LRR) VM allocation policy
+		String vmSelectionPolicy = "mu"; // Maximum Correlation (MC) VM selection policy
 		String parameter = "1.2"; // the safety parameter of the LRR policy
 
 		new PlanetLabRunner(
