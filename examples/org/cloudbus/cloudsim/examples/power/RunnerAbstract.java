@@ -15,6 +15,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.power.PowerDatacenter;
 import org.cloudbus.cloudsim.power.PowerHost;
 import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationAbstract;
+import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationFUSD;
 import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationInterQuartileRange;
 import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationLocalRegression;
 import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationLocalRegressionRobust;
@@ -22,6 +23,7 @@ import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationMedianAbsolut
 import org.cloudbus.cloudsim.power.PowerVmAllocationPolicyMigrationStaticThreshold;
 import org.cloudbus.cloudsim.power.PowerVmAllocationPolicySimple;
 import org.cloudbus.cloudsim.power.PowerVmSelectionPolicy;
+import org.cloudbus.cloudsim.power.PowerVmSelectionPolicyFUSD;
 import org.cloudbus.cloudsim.power.PowerVmSelectionPolicyMaximumCorrelation;
 import org.cloudbus.cloudsim.power.PowerVmSelectionPolicyMinimumMigrationTime;
 import org.cloudbus.cloudsim.power.PowerVmSelectionPolicyMinimumUtilization;
@@ -184,6 +186,7 @@ public abstract class RunnerAbstract {
 					experimentName,
 					Constants.OUTPUT_CSV,
 					outputFolder);
+			Log.printLine();
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -282,6 +285,10 @@ public abstract class RunnerAbstract {
 					hostList,
 					vmSelectionPolicy,
 					parameter);
+		} else if (vmAllocationPolicyName.equals("fusd")) {
+			vmAllocationPolicy = new PowerVmAllocationPolicyMigrationFUSD(
+					hostList,
+					vmSelectionPolicy);
 		} else if (vmAllocationPolicyName.equals("dvfs")) {
 			vmAllocationPolicy = new PowerVmAllocationPolicySimple(hostList);
 		} else {
@@ -308,6 +315,8 @@ public abstract class RunnerAbstract {
 			vmSelectionPolicy = new PowerVmSelectionPolicyMinimumUtilization();
 		} else if (vmSelectionPolicyName.equals("rs")) {
 			vmSelectionPolicy = new PowerVmSelectionPolicyRandomSelection();
+		} else if (vmSelectionPolicyName.equals("fusd")) {
+			vmSelectionPolicy = new PowerVmSelectionPolicyFUSD();
 		} else {
 			System.out.println("Unknown VM selection policy: " + vmSelectionPolicyName);
 			System.exit(0);

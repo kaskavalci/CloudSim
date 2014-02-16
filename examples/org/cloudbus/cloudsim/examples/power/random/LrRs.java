@@ -28,7 +28,7 @@ public class LrRs {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void main(String[] args) throws IOException {
-		boolean enableOutput = true;
+		boolean enableOutput = false;
 		boolean outputToFile = false;
 		String inputFolder = "";
 		String outputFolder = "";

@@ -378,6 +378,99 @@ public class Helper {
 					+ experimentName + "_time_before_host_shutdown.csv");
 			writeDataColumn(timeBeforeVmMigration, outputFolder + "/time_before_vm_migration/"
 					+ experimentName + "_time_before_vm_migration.csv");
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			Log.setDisabled(false);
+			Log.printLine();
+			Log.printLine(String.format("Experiment name: " + experimentName));
+			Log.printLine(String.format("Number of hosts: " + numberOfHosts));
+			Log.printLine(String.format("Number of VMs: " + numberOfVms));
+			Log.printLine(String.format("Total simulation time: %.2f sec", totalSimulationTime));
+			Log.printLine(String.format("Energy consumption: %.2f kWh", energy));
+			Log.printLine(String.format("Number of VM migrations: %d", numberOfMigrations));
+			Log.printLine(String.format("SLA: %.5f%%", sla * 100));
+			Log.printLine(String.format(
+					"SLA perf degradation due to migration: %.2f%%",
+					slaDegradationDueToMigration * 100));
+			Log.printLine(String.format("SLA time per active host: %.2f%%", slaTimePerActiveHost * 100));
+			Log.printLine(String.format("Overall SLA violation: %.2f%%", slaOverall * 100));
+			Log.printLine(String.format("Average SLA violation: %.2f%%", slaAverage * 100));
+			// Log.printLine(String.format("SLA time per VM with migration: %.2f%%",
+			// slaTimePerVmWithMigration * 100));
+			// Log.printLine(String.format("SLA time per VM without migration: %.2f%%",
+			// slaTimePerVmWithoutMigration * 100));
+			// Log.printLine(String.format("SLA time per host: %.2f%%", slaTimePerHost * 100));
+			Log.printLine(String.format("Number of host shutdowns: %d", numberOfHostShutdowns));
+			Log.printLine(String.format(
+					"Mean time before a host shutdown: %.2f sec",
+					meanTimeBeforeHostShutdown));
+			Log.printLine(String.format(
+					"StDev time before a host shutdown: %.2f sec",
+					stDevTimeBeforeHostShutdown));
+			Log.printLine(String.format(
+					"Mean time before a VM migration: %.2f sec",
+					meanTimeBeforeVmMigration));
+			Log.printLine(String.format(
+					"StDev time before a VM migration: %.2f sec",
+					stDevTimeBeforeVmMigration));
+
+			if (datacenter.getVmAllocationPolicy() instanceof PowerVmAllocationPolicyMigrationAbstract) {
+				PowerVmAllocationPolicyMigrationAbstract vmAllocationPolicy = (PowerVmAllocationPolicyMigrationAbstract) datacenter
+						.getVmAllocationPolicy();
+
+				double executionTimeVmSelectionMean = MathUtil.mean(vmAllocationPolicy
+						.getExecutionTimeHistoryVmSelection());
+				double executionTimeVmSelectionStDev = MathUtil.stDev(vmAllocationPolicy
+						.getExecutionTimeHistoryVmSelection());
+				double executionTimeHostSelectionMean = MathUtil.mean(vmAllocationPolicy
+						.getExecutionTimeHistoryHostSelection());
+				double executionTimeHostSelectionStDev = MathUtil.stDev(vmAllocationPolicy
+						.getExecutionTimeHistoryHostSelection());
+				double executionTimeVmReallocationMean = MathUtil.mean(vmAllocationPolicy
+						.getExecutionTimeHistoryVmReallocation());
+				double executionTimeVmReallocationStDev = MathUtil.stDev(vmAllocationPolicy
+						.getExecutionTimeHistoryVmReallocation());
+				double executionTimeTotalMean = MathUtil.mean(vmAllocationPolicy
+						.getExecutionTimeHistoryTotal());
+				double executionTimeTotalStDev = MathUtil.stDev(vmAllocationPolicy
+						.getExecutionTimeHistoryTotal());
+
+				Log.printLine(String.format(
+						"Execution time - VM selection mean: %.5f sec",
+						executionTimeVmSelectionMean));
+				Log.printLine(String.format(
+						"Execution time - VM selection stDev: %.5f sec",
+						executionTimeVmSelectionStDev));
+				Log.printLine(String.format(
+						"Execution time - host selection mean: %.5f sec",
+						executionTimeHostSelectionMean));
+				Log.printLine(String.format(
+						"Execution time - host selection stDev: %.5f sec",
+						executionTimeHostSelectionStDev));
+				Log.printLine(String.format(
+						"Execution time - VM reallocation mean: %.5f sec",
+						executionTimeVmReallocationMean));
+				Log.printLine(String.format(
+						"Execution time - VM reallocation stDev: %.5f sec",
+						executionTimeVmReallocationStDev));
+				Log.printLine(String.format("Execution time - total mean: %.5f sec", executionTimeTotalMean));
+				Log.printLine(String
+						.format("Execution time - total stDev: %.5f sec", executionTimeTotalStDev));
+				Log.printLine("Number of hosts: " + hosts.size());
+				Log.printLine("Number of VMs: " + vms.size());
+			}
+			Log.printLine();
 
 		} else {
 			Log.setDisabled(false);
@@ -678,13 +771,13 @@ public class Helper {
 			List<? extends Host> hosts,
 			PowerVmAllocationPolicyMigrationAbstract vmAllocationPolicy,
 			String outputPath) {
-		// for (Host host : hosts) {
-		for (int j = 0; j < 10; j++) {
-			Host host = hosts.get(j);
+		for (Host host : hosts) {
+		//for (int j = 0; j < 10; j++) {
+			//Host host = hosts.get(j);
 
-			if (!vmAllocationPolicy.getTimeHistory().containsKey(host.getId())) {
-				continue;
-			}
+			//if (!vmAllocationPolicy.getTimeHistory().containsKey(host.getId())) {
+			//	continue;
+			//}
 			File file = new File(outputPath + "_" + host.getId() + ".csv");
 			try {
 				file.createNewFile();
@@ -697,13 +790,14 @@ public class Helper {
 				List<Double> timeData = vmAllocationPolicy.getTimeHistory().get(host.getId());
 				List<Double> utilizationData = vmAllocationPolicy.getUtilizationHistory().get(host.getId());
 				List<Double> metricData = vmAllocationPolicy.getMetricHistory().get(host.getId());
-
-				for (int i = 0; i < timeData.size(); i++) {
-					writer.write(String.format(
-							"%.2f,%.2f,%.2f\n",
-							timeData.get(i),
-							utilizationData.get(i),
-							metricData.get(i)));
+				if (vmAllocationPolicy.getTimeHistory().containsKey(host.getId())){
+					for (int i = 0; i < timeData.size(); i++) {
+						writer.write(String.format(
+								"%.2f,%.2f,%.2f\n",
+								timeData.get(i),
+								utilizationData.get(i),
+								metricData.get(i)));
+					}
 				}
 				writer.close();
 			} catch (IOException e) {
