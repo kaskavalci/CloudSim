@@ -5,22 +5,5 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="lib" path="libs/commons-math3-3.2.jar"/>
 	<classpathentry kind="lib" path="libs/flanagan.jar"/>
-	<classpathentry kind="lib" path="libs/opt4j-3.0.1.jar"/>
-	<classpathentry kind="lib" path="libs/opt4j-core-3.0.1.jar" sourcepath="C:/Users/HalilCan/Downloads/opt4_src/opt4j-hgroot/opt4j"/>
-	<classpathentry kind="lib" path="libs/opt4j-operators-3.0.1.jar"/>
-	<classpathentry kind="lib" path="libs/opt4j-optimizers-3.0.1.jar"/>
-	<classpathentry kind="lib" path="libs/opt4j-satdecoding-3.0.1.jar"/>
-	<classpathentry kind="lib" path="libs/javax.inject-1.jar"/>
-	<classpathentry kind="lib" path="libs/guice-3.0.jar"/>
-	<classpathentry kind="lib" path="libs/guice-multibindings-3.0.jar"/>
-	<classpathentry kind="lib" path="libs/aopalliance-1.0.jar"/>
-	<classpathentry kind="lib" path="libs/asm-3.1.jar"/>
-	<classpathentry kind="lib" path="libs/cglib-2.2.1-v20090111.jar"/>
-	<classpathentry kind="lib" path="libs/opt4j-benchmarks-3.0.1.jar"/>
-	<classpathentry kind="lib" path="libs/opt4j-tutorial-3.0.1.jar" sourcepath="C:/Users/HalilCan/Downloads/opt4_src/opt4j-hgroot/opt4j"/>
-	<classpathentry kind="lib" path="libs/opt4j-viewer-3.0.1.jar"/>
-	<classpathentry kind="lib" path="libs/org.ow2.sat4j.core-2.3.3-tests.jar"/>
-	<classpathentry kind="lib" path="libs/org.ow2.sat4j.core-2.3.3.jar"/>
-	<classpathentry kind="lib" path="libs/org.ow2.sat4j.pb-2.3.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
