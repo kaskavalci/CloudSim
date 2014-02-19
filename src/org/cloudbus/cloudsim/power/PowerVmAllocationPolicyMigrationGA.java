@@ -1,16 +1,13 @@
 package org.cloudbus.cloudsim.power;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 
 import org.cloudbus.cloudsim.Host;
 import org.cloudbus.cloudsim.Vm;
-import org.cloudbus.cloudsim.VmScheduler;
 import org.cloudbus.cloudsim.util.ExecutionTimeMeasurer;
 
 public class PowerVmAllocationPolicyMigrationGA extends
@@ -75,29 +72,30 @@ public class PowerVmAllocationPolicyMigrationGA extends
 	}
 
 	private void crossover() {
-		GAInd p1, p2;
-		p1 = pareto.get(rnd.nextInt(pareto.size()));
-		do {
-			p2 = pareto.get(rnd.nextInt(pareto.size()));
-		} while (p1.equals(p2));
-		
-		try {
-			addToPopulation(new GAInd(p1, p2));
-		} catch (Exception e) {
-			
+		for (int i = 0; i < pop.size(); i++) {
+			if (rnd.nextInt(100) < 90) {
+				GAInd p1, p2;
+				p1 = pop.get(rnd.nextInt(pop.size()));
+				do {
+					p2 = pop.get(rnd.nextInt(pop.size()));
+				} while (p1.equals(p2));
+				
+				try {
+					addToPopulation(new GAInd(p1, p2));
+				} catch (Exception e) {
+				}
+			}
 		}
 	}
 
 	private void mutation() {
-		GAInd randInd;
-		do {
-			randInd = pop.get(rnd.nextInt(pop.size()));
-		} while (!randInd.isPareto);
-		
-		try {
-			randInd.Mutation();
-		} catch (Exception e) {
-			
+		for (GAInd ind : pop) {
+			if (!ind.isPareto && rnd.nextInt(1000) < 10) {
+				try {
+					ind.Mutation();
+				} catch (Exception e) {
+				}
+			}
 		}
 	}
 
