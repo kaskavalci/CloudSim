@@ -263,7 +263,7 @@ public class GAInd {
 			}
 			result = false;
 		}
-		Log.setDisabled(false);
+		//Log.setDisabled(false);
 		return result;
 	}
 

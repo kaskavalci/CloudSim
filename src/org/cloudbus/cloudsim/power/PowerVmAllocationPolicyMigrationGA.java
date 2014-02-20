@@ -5,8 +5,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.logging.Logger;
 
 import org.cloudbus.cloudsim.Host;
+import org.cloudbus.cloudsim.Log;
 import org.cloudbus.cloudsim.Vm;
 import org.cloudbus.cloudsim.util.ExecutionTimeMeasurer;
 
@@ -21,6 +23,7 @@ public class PowerVmAllocationPolicyMigrationGA extends
 			PowerVmSelectionPolicy vmSelectionPolicy) {
 		super(hostList, vmSelectionPolicy);
 		// TODO Auto-generated constructor stub
+		Log.setDisabled(true);
 	}
 
 	@Override
