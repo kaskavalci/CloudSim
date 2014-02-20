@@ -41,7 +41,7 @@ import org.cloudbus.cloudsim.util.ExecutionTimeMeasurer;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 3.0
  */
-public class PowerVmAllocationPolicyMigrationFUSD extends PowerVmAllocationPolicyAbstract {
+public class PowerVmAllocationPolicyMigrationFUSD extends PowerVmAllocationPolicyMigrationAbstract {
 
 	/** The vm selection policy. */
 	private PowerVmSelectionPolicy vmSelectionPolicy;
@@ -79,7 +79,7 @@ public class PowerVmAllocationPolicyMigrationFUSD extends PowerVmAllocationPolic
 	public PowerVmAllocationPolicyMigrationFUSD(
 			List<? extends Host> hostList,
 			PowerVmSelectionPolicy vmSelectionPolicy) {
-		super(hostList);
+		super(hostList, vmSelectionPolicy);
 		setVmSelectionPolicy(vmSelectionPolicy);
 		Log.printLine("\n ********************* Fast Up Slow Down Algortihm - Vm Allocation Policy **********************\n ");
 	}
