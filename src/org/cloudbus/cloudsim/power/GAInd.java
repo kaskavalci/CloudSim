@@ -180,6 +180,11 @@ public class GAInd {
 		return Domination.NoDomination;
 	}
 
+	/**
+	 * 
+	 * @param powerHost
+	 * @return
+	 */
 	private PowerHost copyHost(PowerHost powerHost) {
 		VmScheduler sch = powerHost.getVmScheduler(), newSch;
 		if (sch instanceof VmSchedulerTimeShared) {
@@ -204,6 +209,12 @@ public class GAInd {
 		}
 	}
 
+	/**
+	 * Creates a new PowerVm based on the argument. This is done because Vm does not 
+	 * implement Cloneable interface.
+	 * @param pv
+	 * @return
+	 */
 	private PowerVm copyVM(PowerVm pv) {
 		CloudletScheduler sch = pv.getCloudletScheduler(), newSch;
 		if (sch instanceof CloudletSchedulerDynamicWorkload) {

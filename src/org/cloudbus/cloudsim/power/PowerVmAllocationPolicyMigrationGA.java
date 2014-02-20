@@ -31,7 +31,10 @@ public class PowerVmAllocationPolicyMigrationGA extends
 		List<Map<String, Object>> migrationMap = new LinkedList<Map<String, Object>>();
 		// populate migrationMap here
 
+		ExecutionTimeMeasurer.start("optimizeAllocationHostSelection");
 		initGA();
+		getExecutionTimeHistoryHostSelection().add(
+				ExecutionTimeMeasurer.end("optimizeAllocationHostSelection"));
 		while(true) {
 			try {
 				migrationMap = pareto.get(rnd.nextInt(pareto.size())).getMap();
@@ -72,7 +75,18 @@ public class PowerVmAllocationPolicyMigrationGA extends
 	}
 
 	private void crossover() {
-		for (int i = 0; i < pop.size(); i++) {
+		GAInd p1, p2;
+		p1 = pop.get(rnd.nextInt(pop.size()));
+		do {
+			p2 = pop.get(rnd.nextInt(pop.size()));
+		} while (p1.equals(p2));
+		
+		try {
+			addToPopulation(new GAInd(p1, p2));
+		} catch (Exception e) {
+		}
+		//crossover takes too much time
+		/*for (int i = 0; i < pop.size(); i++) {
 			if (rnd.nextInt(100) < 90) {
 				GAInd p1, p2;
 				p1 = pop.get(rnd.nextInt(pop.size()));
@@ -85,7 +99,7 @@ public class PowerVmAllocationPolicyMigrationGA extends
 				} catch (Exception e) {
 				}
 			}
-		}
+		}*/
 	}
 
 	private void mutation() {
