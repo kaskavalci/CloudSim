@@ -545,23 +545,24 @@ public class PowerVmAllocationPolicyMigrationFUSD extends PowerVmAllocationPolic
 		for (PowerHostUtilizationHistory host : this.<PowerHostUtilizationHistory> getHostList()) {
 			tempHosts.add(host);
 		}
-		int i,flag=1;
+		int i;
 		double maxTemperature=0;
 		int maxHostID=0;
 		int size = tempHosts.size();
-		while (flag == 1){
+		
 			for (i=0 ; i< tempHosts.size(); i++){
+				if(tempHosts.get(i).hotTemperatureOfServer() == 0){
+					continue;
+				}
 				if( tempHosts.get(i).hotTemperatureOfServer() > maxTemperature){
 					maxTemperature= tempHosts.get(i).hotTemperatureOfServer() ;
 					maxHostID=i;
 				}
+				if (i == (size-1)){
+					overUtilizedHosts.add(tempHosts.get(maxHostID));
+					tempHosts.remove(maxHostID);
+				}
 			}
-			overUtilizedHosts.add(tempHosts.get(maxHostID));
-			tempHosts.remove(maxHostID);
-			if (overUtilizedHosts.size()== size){
-				flag = 0;
-			}
-		}
 		
 		return overUtilizedHosts;
 	}
